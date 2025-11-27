@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "svr5NT0K2tz6N5gTocFFnWaXaQkoDhZi7D+l2impCRc=",
+  "Source": "MentorHub.API",
+  "BasePath": "_content/MentorHub.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
