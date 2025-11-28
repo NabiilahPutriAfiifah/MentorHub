@@ -1,7 +1,6 @@
 namespace MentorHub.API.DTOs.Accounts;
 
-public record AccountResponse
-(
+public record exAccountResponse(
     Guid Id,
     string Username,
     Guid RoleId,
@@ -12,5 +11,5 @@ public record AccountResponse
     string Bio,
     string Experience,
     string Position,
-    Guid? MentorId
+    Guid MentorId
 );

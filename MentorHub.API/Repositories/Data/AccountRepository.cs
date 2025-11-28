@@ -12,4 +12,10 @@ public class AccountRepository : Repository<Accounts>, IAccountRepository
     public AccountRepository(MentorHubDbContext context): base(context)
     {
     }
+
+    public async Task<Accounts?> GetByUsernameAsync(string username, CancellationToken cancellationToken)
+    {
+        return await _context.Set<Accounts>()
+                             .FirstOrDefaultAsync(a => a.Username == username, cancellationToken);
+    }
 }

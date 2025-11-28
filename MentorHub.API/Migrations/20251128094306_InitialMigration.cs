@@ -19,7 +19,7 @@ namespace MentorHub.API.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     title = table.Column<string>(type: "nvarchar(200)", nullable: false),
-                    description = table.Column<string>(type: "nvarchar(500)", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(500)", nullable: true),
                     status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     target_date = table.Column<DateTime>(type: "datetime", nullable: false)
                 },
@@ -84,10 +84,10 @@ namespace MentorHub.API.Migrations
                     first_name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     last_name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     email = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    bio = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    experience = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    bio = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
+                    experience = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
                     position = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    mentor_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    mentor_id = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -113,6 +113,7 @@ namespace MentorHub.API.Migrations
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     mentee_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     learning_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     LearningGoalsId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     AccountsId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -182,11 +183,6 @@ namespace MentorHub.API.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "tbl_learning_goals",
-                columns: new[] { "id", "description", "status", "target_date", "title" },
-                values: new object[] { new Guid("b6c2b2b1-7a30-4a2a-ab1f-5fb17e4d2570"), "Basic C# learning", "Pending", new DateTime(2025, 12, 27, 3, 18, 33, 19, DateTimeKind.Utc).AddTicks(7097), "Learn C#" });
-
-            migrationBuilder.InsertData(
                 table: "tbl_roles",
                 columns: new[] { "id", "name" },
                 values: new object[,]
@@ -201,9 +197,9 @@ namespace MentorHub.API.Migrations
                 columns: new[] { "Id", "Description", "Name" },
                 values: new object[,]
                 {
-                    { new Guid("2d4133c4-0b4a-4582-8a10-8ff75b53c490"), "Database skill", "SQL" },
-                    { new Guid("5ad142ba-2e87-4ab5-9eb7-d8d7dd4041bf"), "Programming language", "C#" },
-                    { new Guid("ecd32648-30db-44f3-a7b5-b0dfe27aefd2"), "Frontend language", "JavaScript" }
+                    { new Guid("10000000-0000-0000-0000-000000000001"), "Programming language", "C#" },
+                    { new Guid("10000000-0000-0000-0000-000000000002"), "Frontend language", "JavaScript" },
+                    { new Guid("10000000-0000-0000-0000-000000000003"), "Database skill", "SQL" }
                 });
 
             migrationBuilder.CreateIndex(

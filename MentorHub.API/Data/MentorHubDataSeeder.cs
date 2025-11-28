@@ -7,7 +7,7 @@ public class MentorHubDataSeeder
     private static readonly Guid _adminId = new Guid("10000000-0000-0000-0000-000000000001");
     private static readonly Guid _mentorId = new Guid("10000000-0000-0000-0000-000000000002");
     private static readonly Guid _menteeId = new Guid("10000000-0000-0000-0000-000000000003");
-    
+
 
     public static List<Roles> GetDefaultRoles()
     {
@@ -44,18 +44,9 @@ public class MentorHubDataSeeder
     {
         return new List<Skills>
         {
-            new Skills { Id = Guid.NewGuid(), Name = "C#", Description = "Programming language" },
-            new Skills { Id = Guid.NewGuid(), Name = "JavaScript", Description = "Frontend language" },
-            new Skills { Id = Guid.NewGuid(), Name = "SQL", Description = "Database skill" }
+            new Skills { Id = new Guid("10000000-0000-0000-0000-000000000001"), Name = "C#", Description = "Programming language" },
+            new Skills { Id = new Guid("10000000-0000-0000-0000-000000000002"), Name = "JavaScript", Description = "Frontend language" },
+            new Skills { Id = new Guid("10000000-0000-0000-0000-000000000003"), Name = "SQL", Description = "Database skill" }
         };
     }
-
-    public static List<LearningGoals> GetDefaultLearningGoals()
-    {
-        return new List<LearningGoals>
-        {
-            new LearningGoals { Id = Guid.NewGuid(), Title = "Learn C#", Description = "Basic C# learning", Status = Status.Pending, TargetDate = DateTime.UtcNow.AddMonths(1) }
-        };
-    }
-
 }

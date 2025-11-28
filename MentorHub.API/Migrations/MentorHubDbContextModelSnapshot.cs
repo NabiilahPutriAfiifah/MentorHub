@@ -68,7 +68,6 @@ namespace MentorHub.API.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasMaxLength(1000)
                         .HasColumnType("nvarchar(1000)")
                         .HasColumnName("bio");
@@ -80,7 +79,6 @@ namespace MentorHub.API.Migrations
                         .HasColumnName("email");
 
                     b.Property<string>("Experience")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
                         .HasColumnName("experience");
@@ -97,7 +95,7 @@ namespace MentorHub.API.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("last_name");
 
-                    b.Property<Guid>("MentorId")
+                    b.Property<Guid?>("MentorId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("mentor_id");
 
@@ -122,7 +120,6 @@ namespace MentorHub.API.Migrations
                         .HasColumnName("id");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(500)")
                         .HasColumnName("description");
 
@@ -143,16 +140,6 @@ namespace MentorHub.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tbl_learning_goals", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("b6c2b2b1-7a30-4a2a-ab1f-5fb17e4d2570"),
-                            Description = "Basic C# learning",
-                            Status = "Pending",
-                            TargetDate = new DateTime(2025, 12, 27, 3, 18, 33, 19, DateTimeKind.Utc).AddTicks(7097),
-                            Title = "Learn C#"
-                        });
                 });
 
             modelBuilder.Entity("MentorHub.API.Models.MenteeGoals", b =>
@@ -168,13 +155,17 @@ namespace MentorHub.API.Migrations
                     b.Property<Guid?>("LearningGoalsId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("LearningId")
+                    b.Property<Guid?>("LearningId")
+                        .IsRequired()
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("learning_id");
 
                     b.Property<Guid>("MenteeId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("mentee_id");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -284,19 +275,19 @@ namespace MentorHub.API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("5ad142ba-2e87-4ab5-9eb7-d8d7dd4041bf"),
+                            Id = new Guid("10000000-0000-0000-0000-000000000001"),
                             Description = "Programming language",
                             Name = "C#"
                         },
                         new
                         {
-                            Id = new Guid("ecd32648-30db-44f3-a7b5-b0dfe27aefd2"),
+                            Id = new Guid("10000000-0000-0000-0000-000000000002"),
                             Description = "Frontend language",
                             Name = "JavaScript"
                         },
                         new
                         {
-                            Id = new Guid("2d4133c4-0b4a-4582-8a10-8ff75b53c490"),
+                            Id = new Guid("10000000-0000-0000-0000-000000000003"),
                             Description = "Database skill",
                             Name = "SQL"
                         });
@@ -324,8 +315,7 @@ namespace MentorHub.API.Migrations
                     b.HasOne("MentorHub.API.Models.Employees", "Mentor")
                         .WithMany("Employee")
                         .HasForeignKey("MentorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Account");
 

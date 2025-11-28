@@ -1,11 +1,15 @@
 using MentorHub.API.Data;
 using MentorHub.API.Repositories.Data;
 using MentorHub.API.Repositories.Interfaces;
+using MentorHub.API.Services;
+using MentorHub.API.Services.Interfaces;
+using MentorHub.API.Utilities;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddScoped<MentorHub.API.Repositories.IUnitOfWork, MentorHub.API.Repositories.UnitOfWork>();
+
 // Add services to the container.
 // Register DbContext
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -20,7 +24,18 @@ builder.Services.AddScoped<IMentorSkillRepository, MentorSkillRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<ISkillRepository, SkillRepository>();
 
+
+// Register Business Logic Service
+builder.Services.AddScoped<ISkillService, SkillService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+
+
+
+
 builder.Services.AddControllers();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -37,6 +52,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandler(_ => { });
 
 app.UseHttpsRedirection();
 

@@ -140,3 +140,4 @@ D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\refint\Mento
 D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\MentorHub.API.pdb
 D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\MentorHub.API.genruntimeconfig.cache
 D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\ref\MentorHub.API.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\MentorHub.API.sourcelink.json

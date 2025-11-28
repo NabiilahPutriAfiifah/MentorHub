@@ -92,8 +92,6 @@ namespace MentorHub.API.Data
             // ------------------------
             modelBuilder.Entity<Roles>().HasData(MentorHubDataSeeder.GetDefaultRoles());
             modelBuilder.Entity<Skills>().HasData(MentorHubDataSeeder.GetDefaultSkills());
-            modelBuilder.Entity<LearningGoals>().HasData(MentorHubDataSeeder.GetDefaultLearningGoals());
-
         }
     }
 }
