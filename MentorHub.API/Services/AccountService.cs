@@ -3,6 +3,7 @@ using MentorHub.API.Models;
 using MentorHub.API.Repositories;
 using MentorHub.API.Repositories.Interfaces;
 using MentorHub.API.Services.Interfaces;
+using Microsoft.AspNetCore.Identity;
 
 namespace MentorHub.API.Services;
 
@@ -11,34 +12,40 @@ public class AccountService : IAccountService
     private readonly IAccountRepository _accountRepository;
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPasswordHasher<Accounts> _passwordHasher;
 
-    public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IUnitOfWork unitOfWork)
+    public AccountService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IUnitOfWork unitOfWork, IPasswordHasher<Accounts> passwordHasher)
     {
         _accountRepository = accountRepository;
         _employeeRepository = employeeRepository;
         _unitOfWork = unitOfWork;
+        _passwordHasher = passwordHasher;
     }
 
-    public async Task CreateEmployeeAsync(AccountRequest request, CancellationToken cancellationToken)
+    public async Task CreateEmployeeAsync(AccountCreationRequest accountRequest, EmployeeProfileRequest profileRequest, CancellationToken cancellationToken)
     {
+        var newId = Guid.NewGuid();
+
+        var hashedPassword = _passwordHasher.HashPassword(null!, accountRequest.Password);
+
         var account = new Accounts
         {
-            Id = Guid.NewGuid(),
-            Username = request.Username,
-            Password = request.Password,
-            // RoleId = request.RoleId,
+            Id = newId,
+            Username = accountRequest.Username,
+            Password = hashedPassword,
+            RoleId = accountRequest.RoleId,
         };
 
         var employee = new Employees
         {
-            Id = account.Id,
-            FirstName = request.FirstName,
-            LastName = request.LastName,
-            Email = request.Email,
-            Bio = request.Bio,
-            Experience = request.Experience,
-            Position = request.Position,
-            // MentorId = request.MentorId,
+            Id = newId,
+            FirstName = profileRequest.FirstName,
+            LastName = profileRequest.LastName,
+            Email = profileRequest.Email,
+            Bio = profileRequest.Bio,
+            Experience = profileRequest.Experience,
+            Position = profileRequest.Position,
+            MentorId = profileRequest.MentorId,
         };
 
         await _unitOfWork.CommitTransactionAsync(async () =>
@@ -47,121 +54,26 @@ public class AccountService : IAccountService
             await _employeeRepository.CreateAsync(employee, cancellationToken);
         }, cancellationToken);
     }
-
+    
     public async Task DeleteEmployeeAsync(Guid id, CancellationToken cancellationToken)
     {
         var account = await _accountRepository.GetByIdAsync(id, cancellationToken);
-
         if (account is null)
         {
-            throw new Exception("Account Id not found");
+            throw new NullReferenceException("Account not found.");
         }
 
         var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
-
         if (employee is null)
         {
-            throw new Exception("Account Id not found");
+            throw new NullReferenceException("Employee profile not found.");
         }
 
         await _unitOfWork.CommitTransactionAsync(async () =>
         {
-            await _accountRepository.DeleteAsync(account);
             await _employeeRepository.DeleteAsync(employee);
+            await _accountRepository.DeleteAsync(account);
         }, cancellationToken);
-    }
-
-    public async Task<IEnumerable<AccountResponse>> GetAllEmployeesAsync(CancellationToken cancellationToken)
-    {
-        var getAllAccounts = await _accountRepository.GetAllAsync(cancellationToken);
-        if (!getAllAccounts.Any())
-        {
-            throw new Exception("No employees found.");
-        }
-
-        var getAllEmployees = await _employeeRepository.GetAllAsync(cancellationToken);
-        if (!getAllEmployees.Any())
-        {   
-            throw new Exception("No employees found.");
-        }
-
-        var accountsMap = getAllAccounts.Join(
-            getAllEmployees, 
-            p => p.Id,
-            s => s.Id,
-            (p, s) =>
-            new AccountResponse(
-            p.Id,
-            p.Username,
-            p.RoleId,
-            s.FirstName,
-            s.LastName,
-            s.Email,
-            s.Bio,
-            s.Experience,
-            s.Position,
-            s.MentorId));
-        return accountsMap;
-    }
-    
-    public async Task UpdateEmployeeAsync(Guid id, AccountRequest request, CancellationToken cancellationToken)
-    {
-        var account = await _accountRepository.GetByIdAsync(id, cancellationToken);
-
-        if (account is null)
-        {
-            throw new Exception("Account Id not found");
-        }
-
-        var employee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
-
-        if (employee is null)
-        {
-            throw new Exception("Account Id not found");
-        }
-
-        account.Username = request.Username;
-        account.Password = request.Password;
-        employee.FirstName = request.FirstName;
-        employee.LastName = request.LastName;
-        employee.Email = request.Email;
-        employee.Bio = request.Bio;
-        employee.Experience = request.Experience;
-        employee.Position = request.Position;
-
-        await _unitOfWork.CommitTransactionAsync(async () =>
-        {
-            await _accountRepository.UpdateAsync(account);
-            await _employeeRepository.UpdateAsync(employee);
-        }, cancellationToken);
-    }
-
-    public async Task<AccountResponse?> GetEmployeeByIdAsync(Guid id, CancellationToken cancellationToken)
-    {
-        var getAccount = await _accountRepository.GetByIdAsync(id, cancellationToken);
-        if (getAccount is null)
-        {
-            throw new Exception("Account Id not found"); 
-        }
-
-        var getEmployee = await _employeeRepository.GetByIdAsync(id, cancellationToken);
-        if (getEmployee is null)
-        {
-            throw new Exception("Employee data not found for this Account Id"); 
-        }
-
-        var accountResponse = new AccountResponse(
-            getAccount.Id,
-            getAccount.Username,
-            getAccount.RoleId,
-            getEmployee.FirstName,
-            getEmployee.LastName,
-            getEmployee.Email,
-            getEmployee.Bio,
-            getEmployee.Experience,
-            getEmployee.Position,
-            getEmployee.MentorId);
-
-        return accountResponse;
+        
     }
 }

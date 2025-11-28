@@ -1,14 +1,19 @@
 using MentorHub.API.Data;
+using MentorHub.API.Models;
+using MentorHub.API.Repositories;
 using MentorHub.API.Repositories.Data;
 using MentorHub.API.Repositories.Interfaces;
 using MentorHub.API.Services;
 using MentorHub.API.Services.Interfaces;
 using MentorHub.API.Utilities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddScoped<MentorHub.API.Repositories.IUnitOfWork, MentorHub.API.Repositories.UnitOfWork>();
+// builder.Services.AddScoped<MentorHub.API.Repositories.IUnitOfWork, MentorHub.API.Repositories.UnitOfWork>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IPasswordHasher<Accounts>, PasswordHasher<Accounts>>();
 
 // Add services to the container.
 // Register DbContext

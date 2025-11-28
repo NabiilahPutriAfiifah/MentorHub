@@ -16,7 +16,7 @@ public class AuthenticationService : IAuthenticationService
         var account = await _accountRepository.GetByUsernameAsync(request.Username, cancellationToken);
         if (account is null)
         {
-            throw new Exception("Invalid credentials.");
+            throw new NullReferenceException("Invalid credentials.");
         }
 
         var token = "DUMMY_JWT_TOKEN"; 
