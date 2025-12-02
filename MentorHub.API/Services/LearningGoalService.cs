@@ -9,92 +9,110 @@ public class LearningGoalService : ILearningGoalService
 {
     private readonly ILearningGoalRepository _learningGoalRepository;
     private readonly IUnitOfWork _unitOfWork;
+
     public LearningGoalService(ILearningGoalRepository learningGoalRepository, IUnitOfWork unitOfWork)
     {
         _learningGoalRepository = learningGoalRepository;
         _unitOfWork = unitOfWork;
     }
+
     public async Task CreateLearningGoalAsync(LearningGoalsRequest request, CancellationToken cancellationToken)
     {
-        var learningGoal = new LearningGoals
+        if (!Enum.IsDefined(typeof(Status), request.Status))
+        {
+            throw new Exception("Invalid status value.");
+        }
+        var goalStatus = (Status)request.Status;
+
+        var goal = new LearningGoals
         {
             Id = Guid.NewGuid(),
             Title = request.Title,
             Description = request.Description,
+            TargetDate = request.TargetDate, 
+            Status = goalStatus
         };
 
         await _unitOfWork.CommitTransactionAsync(async () =>
         {
-            await _learningGoalRepository.CreateAsync(learningGoal, cancellationToken);
+            await _learningGoalRepository.CreateAsync(goal, cancellationToken);
         }, cancellationToken);
     }
 
     public async Task DeleteLearningGoalAsync(Guid id, CancellationToken cancellationToken)
     {
-        var learningGoal = await _learningGoalRepository.GetByIdAsync(id, cancellationToken);
-        if (learningGoal is null)
+        var goal = await _learningGoalRepository.GetByIdAsync(id, cancellationToken);
+
+        if (goal is null)
         {
-            throw new Exception("Learning Goal Id not found");
+            throw new Exception("Learning Goal not found.");
         }
 
         await _unitOfWork.CommitTransactionAsync(async () =>
         {
-            await _learningGoalRepository.DeleteAsync(learningGoal);
+            await _learningGoalRepository.DeleteAsync(goal);
         }, cancellationToken);
     }
 
     public async Task<IEnumerable<LearningGoalsResponse>> GetAllLearningGoalsAsync(CancellationToken cancellationToken)
     {
-        var getAllLearningGoals = await _learningGoalRepository.GetAllAsync(cancellationToken);
-        if (!getAllLearningGoals.Any())
+        var goals = await _learningGoalRepository.GetAllAsync(cancellationToken);
+        
+        if (!goals.Any())
         {
-            throw new Exception("No Learning Goals Found");
+            return Enumerable.Empty<LearningGoalsResponse>();
         }
-        var learningGoalMap = getAllLearningGoals.Select(learningGoal => new LearningGoalsResponse
-        (
-            learningGoal.Id,
-            learningGoal.Title,
-            learningGoal.Description,
-            learningGoal.Status.ToString(),
-            learningGoal.TargetDate
+
+        return goals.Select(g => new LearningGoalsResponse(
+            g.Id,
+            g.Title,
+            g.Description,
+            g.Status.ToString(), // Konversi Enum ke string
+            g.TargetDate
         ));
-        return learningGoalMap;
     }
 
     public async Task<LearningGoalsResponse?> GetLearningGoalByIdAsync(Guid id, CancellationToken cancellationToken)
     {
-        var learningGoal = await _learningGoalRepository.GetByIdAsync(id, cancellationToken);
-        if (learningGoal is null)
+        var goal = await _learningGoalRepository.GetByIdAsync(id, cancellationToken);
+        
+        if (goal is null)
         {
-            throw new Exception("Learning Goal Id not found");
+            return null;
         }
 
-        var learningGoalResponse = new LearningGoalsResponse
-        (
-            learningGoal.Id,
-            learningGoal.Title,
-            learningGoal.Description,
-            learningGoal.Status.ToString(),
-            learningGoal.TargetDate
+        return new LearningGoalsResponse(
+            goal.Id,
+            goal.Title,
+            goal.Description,
+            goal.Status.ToString(),
+            goal.TargetDate
         );
-
-        return learningGoalResponse;
     }
 
     public async Task UpdateLearningGoalAsync(Guid id, LearningGoalsRequest request, CancellationToken cancellationToken)
     {
-        var learningGoal = await _learningGoalRepository.GetByIdAsync(id, cancellationToken);
-        if (learningGoal is null)
-        {
-            throw new Exception("Learning Goal Id not found");
-        }
+        var goal = await _learningGoalRepository.GetByIdAsync(id, cancellationToken);
 
-        learningGoal.Title = request.Title;
-        learningGoal.Description = request.Description;
+        if (goal is null)
+        {
+            throw new Exception("Learning Goal not found.");
+        }
+        
+        if (!Enum.IsDefined(typeof(Status), request.Status))
+        {
+            throw new Exception("Invalid status value.");
+        }
+        var goalStatus = (Status)request.Status;
+
+        goal.Title = request.Title;
+        goal.Description = request.Description;
+        goal.TargetDate = request.TargetDate;
+        goal.Status = goalStatus;
 
         await _unitOfWork.CommitTransactionAsync(async () =>
         {
-            await _learningGoalRepository.UpdateAsync(learningGoal);
+            await _learningGoalRepository.UpdateAsync(goal);
         }, cancellationToken);
     }
 

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MentorHub.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5f68e72e3a7c1b5531e0b3e650007d02a2d03a3b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+40d067a3dad0f233f2d0152c25954e324d7be231")]
 [assembly: System.Reflection.AssemblyProductAttribute("MentorHub.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MentorHub.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

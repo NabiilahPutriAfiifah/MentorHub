@@ -59,6 +59,32 @@ namespace MentorHub.API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("tbl_accounts", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000001"),
+                            IsUsed = false,
+                            Password = "Pa$$word123",
+                            RoleId = new Guid("10000000-0000-0000-0000-000000000001"),
+                            Username = "admin"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000002"),
+                            IsUsed = false,
+                            Password = "Pa$$word123",
+                            RoleId = new Guid("10000000-0000-0000-0000-000000000002"),
+                            Username = "mentor"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000003"),
+                            IsUsed = false,
+                            Password = "Pa$$word123",
+                            RoleId = new Guid("10000000-0000-0000-0000-000000000003"),
+                            Username = "mentee"
+                        });
                 });
 
             modelBuilder.Entity("MentorHub.API.Models.Employees", b =>
@@ -110,6 +136,39 @@ namespace MentorHub.API.Migrations
                     b.HasIndex("MentorId");
 
                     b.ToTable("tbl_employees", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000001"),
+                            Bio = "System Administrator.",
+                            Email = "admin@hub.com",
+                            Experience = "Senior",
+                            FirstName = "Super",
+                            LastName = "Admin",
+                            Position = "System Analyst"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000002"),
+                            Bio = "Full-stack developer with 5 years experience.",
+                            Email = "budi@hub.com",
+                            Experience = "Expert",
+                            FirstName = "Budi",
+                            LastName = "Prasetyo",
+                            Position = "Tech Lead"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000003"),
+                            Bio = "Junior developer learning C#.",
+                            Email = "siti@hub.com",
+                            Experience = "Junior",
+                            FirstName = "Siti",
+                            LastName = "Aisyah",
+                            MentorId = new Guid("10000000-0000-0000-0000-000000000002"),
+                            Position = "Developer"
+                        });
                 });
 
             modelBuilder.Entity("MentorHub.API.Models.LearningGoals", b =>
@@ -140,6 +199,16 @@ namespace MentorHub.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("tbl_learning_goals", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000010"),
+                            Description = "Mampu mengimplementasikan CRUD dengan Entity Framework Core di ASP.NET.",
+                            Status = "InProgress",
+                            TargetDate = new DateTime(2025, 12, 31, 0, 0, 0, 0, DateTimeKind.Local),
+                            Title = "Menguasai EF Core"
+                        });
                 });
 
             modelBuilder.Entity("MentorHub.API.Models.MenteeGoals", b =>
@@ -178,6 +247,15 @@ namespace MentorHub.API.Migrations
                     b.HasIndex("MenteeId");
 
                     b.ToTable("tbl_mentee_goals", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("cec21414-9509-4898-9587-ef8306781d7b"),
+                            LearningId = new Guid("10000000-0000-0000-0000-000000000010"),
+                            MenteeId = new Guid("10000000-0000-0000-0000-000000000003"),
+                            Status = 1
+                        });
                 });
 
             modelBuilder.Entity("MentorHub.API.Models.MentorSkills", b =>
@@ -216,6 +294,22 @@ namespace MentorHub.API.Migrations
                     b.HasIndex("SkillsId");
 
                     b.ToTable("tbl_mentor_skills", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("ee74eb17-ada5-4fc3-8604-48768fb97765"),
+                            Level = 2,
+                            MentorId = new Guid("10000000-0000-0000-0000-000000000002"),
+                            SkillId = new Guid("10000000-0000-0000-0000-000000000001")
+                        },
+                        new
+                        {
+                            Id = new Guid("fc94bbef-b663-421b-9343-0c7744233826"),
+                            Level = 1,
+                            MentorId = new Guid("10000000-0000-0000-0000-000000000002"),
+                            SkillId = new Guid("10000000-0000-0000-0000-000000000002")
+                        });
                 });
 
             modelBuilder.Entity("MentorHub.API.Models.Roles", b =>
@@ -276,20 +370,32 @@ namespace MentorHub.API.Migrations
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
-                            Description = "Programming language",
+                            Description = "Programming language for backend development.",
                             Name = "C#"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
-                            Description = "Frontend language",
+                            Description = "Frontend and full-stack language.",
                             Name = "JavaScript"
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
-                            Description = "Database skill",
+                            Description = "Database query and management skill.",
                             Name = "SQL"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000004"),
+                            Description = "User experience and interface design.",
+                            Name = "UX/UI Design"
+                        },
+                        new
+                        {
+                            Id = new Guid("10000000-0000-0000-0000-000000000005"),
+                            Description = "Scripting and data analysis language.",
+                            Name = "Python"
                         });
                 });
 

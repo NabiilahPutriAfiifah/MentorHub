@@ -3,6 +3,7 @@ using MentorHub.API.Models;
 using MentorHub.API.Repositories;
 using MentorHub.API.Repositories.Interfaces;
 using MentorHub.API.Services.Interfaces;
+using MentorHub.API.Utilities;
 using Microsoft.AspNetCore.Identity;
 
 namespace MentorHub.API.Services;
@@ -13,6 +14,7 @@ public class EmployeeService : IEmployeeService
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher<Accounts> _passwordHasher;
+    private readonly IEmailHandler _emailHandler;
 
     public EmployeeService(IAccountRepository accountRepository, IEmployeeRepository employeeRepository, IUnitOfWork unitOfWork, IPasswordHasher<Accounts> passwordHasher)
     {
@@ -90,6 +92,8 @@ public class EmployeeService : IEmployeeService
             account, 
             account.Password, 
             request.CurrentPassword);
+
+        
 
         if (verificationResult == PasswordVerificationResult.Failed)
         {

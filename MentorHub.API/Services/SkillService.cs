@@ -4,6 +4,8 @@ using MentorHub.API.DTOs.Roles;
 using MentorHub.API.Repositories;
 using MentorHub.API.Repositories.Interfaces;
 using MentorHub.API.Services.Interfaces;
+using MentorHub.API.Utilities;
+using Microsoft.CodeAnalysis;
 
 namespace MentorHub.API.Services;
 
@@ -11,10 +13,13 @@ public class SkillService : ISkillService
 {
     private readonly ISkillRepository _skillRepository;
     private readonly IUnitOfWork _unitOfWork;
-    public SkillService(ISkillRepository skillRepository, IUnitOfWork unitOfWork)
+    private readonly IEmailHandler _emailHandler;
+
+    public SkillService(ISkillRepository skillRepository, IUnitOfWork unitOfWork, IEmailHandler emailHandler)
     {
         _skillRepository = skillRepository;
         _unitOfWork = unitOfWork;
+        _emailHandler = emailHandler;
     }
 
     public async Task CreeteSkillAsync(SkillRequest request, CancellationToken cancellationToken)
@@ -30,7 +35,47 @@ public class SkillService : ISkillService
         {
             await _skillRepository.CreateAsync(skill, cancellationToken);
         }, cancellationToken);
+
+        _ = SendProjectCreationEmailAsync(skill);
+
+        // var emailDto = new EmailDto(
+        //         To: "admin@skillsync.local",
+        //         Subject: "Hallooooooo",
+        //         Body: "hallo world"
+        //     );
+
+        //     await _emailHandler.EmailAsync(emailDto);
+
     }
+
+
+    private async Task SendProjectCreationEmailAsync(Skills project)
+    {
+        try
+        {
+            var emailBody =
+                $@"
+                <h2>New Project Created</h2>
+                <p><strong>Project Name:</strong> {project.Name}</p>
+                <p><strong>Description:</strong> {project.Description}</p>
+                <hr>
+                <p>Project ID: {project.Id}</p>
+            ";
+
+            var emailDto = new EmailDto(
+                To: "admin@skillsync.local",
+                Subject: $"New Project Created: {project.Name}",
+                Body: emailBody
+            );
+
+            await _emailHandler.EmailAsync(emailDto);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to send project creation email: {ex.Message}");
+        }
+    }
+
 
     public async Task DeleteSkillAsync(Guid id, CancellationToken cancellationToken)
     {

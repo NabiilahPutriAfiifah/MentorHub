@@ -2,7 +2,8 @@ namespace MentorHub.API.DTOs.MentorSkill;
 
 public record MentorSkillResponse
 (
-    Guid Id,
+    Guid SkillId,
     string SkillName,
+    string SkillDescription,
     string Level
 );

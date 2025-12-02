@@ -141,3 +141,12 @@ D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\MentorHub.AP
 D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\MentorHub.API.genruntimeconfig.cache
 D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\ref\MentorHub.API.dll
 D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\obj\Debug\net8.0\MentorHub.API.sourcelink.json
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\FluentValidation.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\FluentValidation.DependencyInjectionExtensions.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\SharpGrip.FluentValidation.AutoValidation.Mvc.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\SharpGrip.FluentValidation.AutoValidation.Shared.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\MailKit.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\MimeKit.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\System.Security.Cryptography.Pkcs.dll
+D:\Dokumen\Magang Kemnaker\MentorHub\MentorHub.API\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Security.Cryptography.Pkcs.dll

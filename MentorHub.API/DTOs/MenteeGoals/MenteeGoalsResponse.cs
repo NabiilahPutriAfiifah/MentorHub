@@ -4,6 +4,10 @@ public record MenteeGoalsResponse
 (
     Guid Id,
     Guid MenteeId,
-    Guid LearningId,
-    string Status
+    Guid LearningGoalId,
+    string RequestStatus
+    // string Title,
+    // string Description,
+    // string Status,
+    // DateTime TargetDate
 );

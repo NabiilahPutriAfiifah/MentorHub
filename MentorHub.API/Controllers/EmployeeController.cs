@@ -13,7 +13,6 @@ public class EmployeeController : ControllerBase
     private readonly IAccountService _accountService;
     private readonly IEmployeeService _employeeService;
 
-    // Konstruktor (Dependency Injection)
     public EmployeeController(IAccountService accountService, IEmployeeService employeeService)
     {
         _accountService = accountService;
@@ -30,20 +29,18 @@ public class EmployeeController : ControllerBase
         return userId;
     }
 
-    // --- 1. ADMIN: CREATE (Membuat Akun/Employee Baru) ---
-    // Endpoint ini menerima satu DTO gabungan untuk memudahkan Admin
+    // 1. ADMIN: CREATE
     public record CombinedCreationRequest(
         AccountCreationRequest AccountData,
         EmployeeProfileRequest ProfileData
     );
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateEmployee([FromBody] CombinedCreationRequest request, CancellationToken cancellationToken)
     {
         try
         {
-            // Memanggil AccountService untuk mengkoordinasikan pembuatan ID bersama
             await _accountService.CreateEmployeeAsync(request.AccountData, request.ProfileData, cancellationToken);
             return StatusCode(201); // Created
         }
@@ -53,9 +50,9 @@ public class EmployeeController : ControllerBase
         }
     }
     
-    // --- 2. ADMIN: DELETE (Menghapus Akun/Employee) ---
+    // 2. ADMIN: DELETE
     [HttpDelete("{id}")]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteEmployee(Guid id, CancellationToken cancellationToken)
     {
         try
@@ -69,19 +66,18 @@ public class EmployeeController : ControllerBase
         }
     }
 
-    // --- 3. ADMIN: READ ALL (Mendapatkan Semua Profil) ---
+    // 3. ADMIN: READ ALL
     [HttpGet]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<AccountResponse>>> GetAllEmployees(CancellationToken cancellationToken)
     {
-        // Asumsi IEmployeeService.GetAllProfilesAsync sudah ada
         var profiles = await _employeeService.GetAllProfilesAsync(cancellationToken);
         return Ok(profiles);
     }
     
-    // --- 4. ADMIN: READ BY ID (Mendapatkan Profil Admin/User Lain) ---
+    // 4. ADMIN: READ BY ID
     [HttpGet("{id}")]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public async Task<ActionResult<AccountResponse>> GetEmployeeById(Guid id, CancellationToken cancellationToken)
     {
         var profile = await _employeeService.GetProfileByIdAsync(id, cancellationToken);
@@ -92,7 +88,7 @@ public class EmployeeController : ControllerBase
         return Ok(profile);
     }
 
-    // --- 5. SELF-SERVICE: READ MY PROFILE (Endpoint /me) ---
+    // 5. SELF-SERVICE: READ MY PROFILE
     [HttpGet("me")]
     public async Task<ActionResult<AccountResponse>> GetMyProfile(CancellationToken cancellationToken)
     {
@@ -106,7 +102,7 @@ public class EmployeeController : ControllerBase
         return Ok(profile);
     }
 
-    // --- 6. SELF-SERVICE: UPDATE PROFILE (/me/profile) ---
+    // 6. SELF-SERVICE: UPDATE PROFILE
     [HttpPut("me/profile")]
     public async Task<IActionResult> UpdateMyProfile([FromBody] ProfileUpdateRequest request, CancellationToken cancellationToken)
     {
@@ -115,7 +111,7 @@ public class EmployeeController : ControllerBase
         return NoContent();
     }
 
-    // --- 7. SELF-SERVICE: UPDATE PASSWORD (/me/password) ---
+    // 7. SELF-SERVICE: UPDATE PASSWORD
     [HttpPut("me/password")]
     public async Task<IActionResult> UpdateMyPassword([FromBody] PasswordUpdateRequest request, CancellationToken cancellationToken)
     {

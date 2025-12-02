@@ -36,7 +36,7 @@ public class RoleService : IRoleService
         var role = await _roleRepository.GetByIdAsync(id, cancellationToken);
         if (role is null)
         {
-            throw new Exception("Role Id not found");
+            throw new NullReferenceException("Role Id not found");
         }
 
         await _unitOfWork.CommitTransactionAsync(async () =>
@@ -50,7 +50,7 @@ public class RoleService : IRoleService
         var getAllRoles = await _roleRepository.GetAllAsync(cancellationToken);
         if (!getAllRoles.Any())
         {
-            throw new Exception("No Roles Found");
+            throw new NullReferenceException("No Roles Found");
         }
 
         var roleMap = getAllRoles.Select(role => new RoleResponse
@@ -67,7 +67,7 @@ public class RoleService : IRoleService
         var getRole = await _roleRepository.GetByIdAsync(id, cancellationToken);
         if (getRole is null)
         {
-            throw new Exception("Role Id not found");
+            throw new NullReferenceException("Role Id not found");
         }
 
         var roleMap = new RoleResponse
@@ -85,7 +85,7 @@ public class RoleService : IRoleService
 
         if (role is null)
         {
-            throw new Exception("Role Id not found");
+            throw new NullReferenceException("Role Id not found");
         }
 
         role.Name = request.Name;

@@ -19,23 +19,29 @@ public class MentorSkillService : IMentorSkillService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task AddMentorSkillAsync(Guid mentorId, MentorSkillRequest request, CancellationToken cancellationToken)
+    public async Task AddSkillToMentorAsync(Guid accountId, MentorSkillRequest request, CancellationToken cancellationToken)
     {
-        var skill = await _skillRepository.GetByIdAsync(request.SkillId, cancellationToken);
-        if (skill is null)
+        var skillMaster = await _skillRepository.GetByIdAsync(request.SkillId, cancellationToken);
+        if (skillMaster is null)
         {
-            throw new Exception("Skill Id not found");
+            throw new NullReferenceException("Skill ID not found in master list.");
         }
 
-        if (!Enum.TryParse(request.Level, true, out MentorHub.API.Models.Level skillLevel))
+        var existingSkill = await _mentorSkillRepository.GetExistingSkillAsync(accountId, request.SkillId, cancellationToken);
+        if (existingSkill is not null)
         {
-            throw new Exception($"Invalid skill level value provided: {request.Level}. Must be one of {string.Join(", ", Enum.GetNames(typeof(MentorHub.API.Models.Level)))}.");
+            throw new ArgumentException("Mentor already has this skill.");
         }
         
+        if (!Enum.IsDefined(typeof(Level), request.Level))
+        {
+            throw new ArgumentException("Invalid level value.");
+        }
+        var skillLevel = (Level)request.Level;
+
         var mentorSkill = new MentorSkills
         {
-            Id = Guid.NewGuid(),
-            MentorId = mentorId, 
+            MentorId = accountId, 
             SkillId = request.SkillId,
             Level = skillLevel 
         };
@@ -46,80 +52,59 @@ public class MentorSkillService : IMentorSkillService
         }, cancellationToken);
     }
 
-    public async Task DeleteSkillFromMentorAsync(Guid mentorId, Guid skillId, CancellationToken cancellationToken)
+    public async Task DeleteSkillFromMentorAsync(Guid accountId, Guid skillId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        // var mentorSkill = await _mentorSkillRepository.GetMentorSkillAsync(mentorId, skillId, cancellationToken);
-    
-        // if (mentorSkill is null)
-        // {
-        //     throw new Exception("Mentor Skill not found");
-        // }
-
-        // await _unitOfWork.CommitTransactionAsync(async () =>
-        // {
-        //     await _mentorSkillRepository.DeleteAsync(mentorSkill); 
-        // }, cancellationToken);
-    }
-
-    public async Task<MentorSkillResponse?> GetMentorSkillAsync(Guid mentorId, Guid skillId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-        // var mentorSkill = await _mentorSkillRepository.GetMentorSkillAsync(mentorId, skillId, cancellationToken);
-
-        // if (mentorSkill is null)
-        // {
-        //     return null; 
-        // }
-
-        // return new MentorSkillResponse(
-        //     mentorSkill.SkillId,
-        //     mentorSkill.Skills.Name,
-        //     mentorSkill.Level.ToString()
-        // );
-    }
-
-
-    public async Task<IEnumerable<MentorSkillResponse>> GetMentorSkillsAsync(Guid mentorId, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-        // var mentorSkills = await _mentorSkillRepository.GetMentorSkillsAsync(mentorId, cancellationToken);
+        var mentorSkill = await _mentorSkillRepository.GetExistingSkillAsync(accountId, skillId, cancellationToken);
         
-        // if (!mentorSkills.Any())
-        // {
-        //     return Enumerable.Empty<MentorSkillResponse>(); 
-        // }
+        if (mentorSkill is null)
+        {
+            throw new NullReferenceException("Skill not found for this mentor.");
+        }
 
-        // return mentorSkills.Select(ms => new MentorSkillResponse
-        // (
-        //     ms.SkillId,
-        //     ms.Skills.Name,
-        //     ms.Level.ToString() 
-        // ));
+        await _unitOfWork.CommitTransactionAsync(async () =>
+        {
+            await _mentorSkillRepository.DeleteAsync(mentorSkill); 
+        }, cancellationToken);
     }
-    
-    public async Task UpdateSkillLevelAsync(Guid mentorId, Guid skillId, int newLevel, CancellationToken cancellationToken)
+
+    public async Task<IEnumerable<MentorSkillResponse>> GetMentorSkillsAsync(Guid accountId, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
-        // if (!Enum.IsDefined(typeof(MentorHub.API.Models.Level), newLevel))
-        // {
-        //     throw new Exception("Invalid skill level value.");
-        // }
-        // var skillLevel = (MentorHub.API.Models.Level)newLevel;
+        var mentorSkills = await _mentorSkillRepository.GetSkillsByAccountIdAsync(accountId, cancellationToken);
+        
+        if (!mentorSkills.Any())
+        {
+            return Enumerable.Empty<MentorSkillResponse>();
+        }
 
-        // var mentorSkill = await _mentorSkillRepository.GetMentorSkillAsync(mentorId, skillId, cancellationToken);
+        return mentorSkills.Select(ms => new MentorSkillResponse(
+            ms.SkillId,
+            ms.Skills.Name, 
+            ms.Skills.Description ?? string.Empty, 
+            ms.Level.ToString() 
+        ));
+    }
 
-        // if (mentorSkill is null)
-        // {
-        //     throw new Exception("Skill not found for this mentor.");
-        // }
+    public async Task UpdateSkillLevelAsync(Guid accountId, Guid skillId, int newLevel, CancellationToken cancellationToken)
+    {
+        if (!Enum.IsDefined(typeof(Level), newLevel))
+        {
+            throw new ArgumentException("Invalid skill level value.");
+        }
+        var skillLevel = (Level)newLevel;
 
-        // mentorSkill.Level = skillLevel;
+        var mentorSkill = await _mentorSkillRepository.GetExistingSkillAsync(accountId, skillId, cancellationToken);
 
-        // await _unitOfWork.CommitTransactionAsync(async () =>
-        // {
-        //     await _mentorSkillRepository.UpdateAsync(mentorSkill);
-        // }, cancellationToken);
+        if (mentorSkill is null)
+        {
+            throw new NullReferenceException("Skill not found for this mentor.");
+        }
+
+        mentorSkill.Level = skillLevel;
+
+        await _unitOfWork.CommitTransactionAsync(async () =>
+        {
+            await _mentorSkillRepository.UpdateAsync(mentorSkill); 
+        }, cancellationToken);
     }
 
 }

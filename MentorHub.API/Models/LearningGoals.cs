@@ -15,7 +15,7 @@ public class LearningGoals
 }
 
 public enum Status {
+    NotStarted,
     Completed,
-    InProgress,
-    NotStarted
+    InProgress
 }

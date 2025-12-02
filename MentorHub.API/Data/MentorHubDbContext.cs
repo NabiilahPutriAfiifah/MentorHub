@@ -90,8 +90,26 @@ namespace MentorHub.API.Data
             // ------------------------
             // SEED ACCOUNTS, SKILLS, LEARNINGGOALS
             // ------------------------
-            modelBuilder.Entity<Roles>().HasData(MentorHubDataSeeder.GetDefaultRoles());
-            modelBuilder.Entity<Skills>().HasData(MentorHubDataSeeder.GetDefaultSkills());
+            // 1. ROLES
+    modelBuilder.Entity<Roles>().HasData(MentorHubDataSeeder.GetDefaultRoles());
+
+    // 2. SKILLS
+    modelBuilder.Entity<Skills>().HasData(MentorHubDataSeeder.GetDefaultSkills());
+    
+    // 3. ACCOUNTS
+    modelBuilder.Entity<Accounts>().HasData(MentorHubDataSeeder.GetDefaultAccounts());
+
+    // 4. EMPLOYEES
+    modelBuilder.Entity<Employees>().HasData(MentorHubDataSeeder.GetDefaultEmployees());
+    
+    // 5. MENTORSKILLS
+    modelBuilder.Entity<MentorSkills>().HasData(MentorHubDataSeeder.GetDefaultMentorSkills());
+    
+    // 6. LEARNING GOALS
+    modelBuilder.Entity<LearningGoals>().HasData(MentorHubDataSeeder.GetDefaultLearningGoals());
+    
+    // 7. MENTEE GOALS
+    modelBuilder.Entity<MenteeGoals>().HasData(MentorHubDataSeeder.GetDefaultMenteeGoals());
         }
     }
 }
